@@ -1,13 +1,24 @@
 package com.example.kuwako.bijinwallpaper;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.pinterest.android.pdk.PDKCallback;
+import com.pinterest.android.pdk.PDKClient;
+import com.pinterest.android.pdk.PDKException;
+import com.pinterest.android.pdk.PDKResponse;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -26,6 +37,45 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
+
+        // pinterest系処理
+        PDKClient.configureInstance(this, "4819393203784402346");
+        PDKClient.getInstance().onConnect(this);
+
+        List scopes = new ArrayList<String>();
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
+
+        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
+            @Override
+            public void onSuccess(PDKResponse response) {
+                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
+                //user logged in, use response.getUser() to get PDKUser object
+            }
+
+            @Override
+            public void onFailure(PDKException exception) {
+                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
+            }
+        });
+
+        PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
+            @Override
+            public void onSuccess(PDKResponse response){
+                Log.d("@@@username", response.getUser().getFirstName());
+            }
+
+            @Override
+            public void onFailure(PDKException exception) {
+                Log.d("@@@username", "getPathFailed");
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        PDKClient.getInstance().onOauthResponse(requestCode, resultCode, data);
     }
 
     @Override
