@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.pinterest.android.pdk.PDKBoard;
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
 import com.pinterest.android.pdk.PDKException;
@@ -46,18 +47,25 @@ public class MainActivity extends AppCompatActivity {
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
 
-        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
-            @Override
-            public void onSuccess(PDKResponse response) {
-                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-                //user logged in, use response.getUser() to get PDKUser object
-            }
-
-            @Override
-            public void onFailure(PDKException exception) {
-                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
-            }
-        });
+//        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
+//            @Override
+//            public void onSuccess(PDKResponse response) {
+//                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
+//                //user logged in, use response.getUser() to get PDKUser object
+//                List<PDKBoard> boardList = response.getBoardList();
+//                Log.d("@@@boardList", boardList.toString());
+//
+//                for(int i=0; i < boardList.size(); i++) {
+//                    PDKBoard board = boardList.get(i);
+//                    Log.d("@@@BoardInfo", "BoardName: " + board.getName() + " PinsCount: " + board.getPinsCount() + " ImageUrl: " + board.getImageUrl() + " Uid: " + board.getUid());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(PDKException exception) {
+//                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
+//            }
+//        });
 
         PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
             @Override
@@ -68,6 +76,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(PDKException exception) {
                 Log.d("@@@username", "getPathFailed");
+            }
+        });
+
+        PDKClient.getInstance().getPath("boards/mrmasakik/美人/", null, new PDKCallback() {
+            @Override
+            public void onSuccess(PDKResponse response){
+                Log.d("@@@board", response.getBoard().getDescription());
+            }
+
+            @Override
+            public void onFailure(PDKException exception) {
+                Log.d("@@@borad", exception.getMessage() + " : " + exception.getDetailMessage() + " : " + exception.getLocalizedMessage());
             }
         });
     }
