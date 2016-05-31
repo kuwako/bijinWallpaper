@@ -15,7 +15,9 @@ import com.pinterest.android.pdk.PDKBoard;
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
 import com.pinterest.android.pdk.PDKException;
+import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
+import com.pinterest.android.pdk.PDKUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,55 +49,134 @@ public class MainActivity extends AppCompatActivity {
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
 
-//        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
-//            @Override
-//            public void onSuccess(PDKResponse response) {
-//                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-//                //user logged in, use response.getUser() to get PDKUser object
-//                List<PDKBoard> boardList = response.getBoardList();
-//                Log.d("@@@boardList", boardList.toString());
-//
-//                for(int i=0; i < boardList.size(); i++) {
-//                    PDKBoard board = boardList.get(i);
-//                    Log.d("@@@BoardInfo", "BoardName: " + board.getName() + " PinsCount: " + board.getPinsCount() + " ImageUrl: " + board.getImageUrl() + " Uid: " + board.getUid());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(PDKException exception) {
-//                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
-//            }
-//        });
-
-        PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
+        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
             @Override
-            public void onSuccess(PDKResponse response){
-                Log.d("@@@username", response.getUser().getFirstName());
+            public void onSuccess(PDKResponse response) {
+                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
+                //user logged in, use response.getUser() to get PDKUser object
+                Log.d("@@@userImageUrl",response.getUser().getImageUrl());
+
+//                PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
+//                    @Override
+//                    public void onSuccess(PDKResponse response){
+//                        Log.d("@@@username", response.getUser().getFirstName());
+//                        PDKUser user = response.getUser();
+//                    }
+//
+//                    @Override
+//                    public void onFailure(PDKException exception) {
+//                        Log.d("@@@username", "getPathFailed");
+//                    }
+//                });
+
+//                PDKClient.getInstance().getPath("boards/mrmasakik/美人/", null, new PDKCallback() {
+//                    @Override
+//                    public void onSuccess(PDKResponse response){
+//                        Log.d("@@@board", response.getBoard().getDescription());
+//                        List<PDKPin> pinList = response.getPinList();
+//                        PDKPin pinTemp = response.getPin();
+//
+//                        Log.d("@@@pinTemp", pinTemp.getImageUrl());
+//                        for (int i = 0; i < pinList.size() ;i++) {
+//                            PDKPin pin = pinList.get(i);
+//                            if (i == 1) {
+//                                Log.d("@@@pinUrl", pin.getImageUrl());
+//                                Log.d("@@@pinLink", pin.getLink());
+//                                Log.d("@@@pinMetaData", pin.getMetadata());
+//                                Log.d("@@@pinNote", pin.getNote());
+//                                Log.d("@@@pinUid", pin.getUid());
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(PDKException exception) {
+//                        Log.d("@@@borad", exception.getMessage() + " : " + exception.getDetailMessage() + " : " + exception.getLocalizedMessage());
+//                    }
+//                });
+
+
             }
 
             @Override
             public void onFailure(PDKException exception) {
-                Log.d("@@@username", "getPathFailed");
+                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
             }
         });
 
-        PDKClient.getInstance().getPath("boards/mrmasakik/美人/", null, new PDKCallback() {
-            @Override
-            public void onSuccess(PDKResponse response){
-                Log.d("@@@board", response.getBoard().getDescription());
-            }
+        getPinList();
 
-            @Override
-            public void onFailure(PDKException exception) {
-                Log.d("@@@borad", exception.getMessage() + " : " + exception.getDetailMessage() + " : " + exception.getLocalizedMessage());
-            }
-        });
+        PDKClient.getInstance().getMe("id,image,counts,created_at,first_name,last_name,bio,username",
+                new PDKCallback() {
+                    @Override
+                    public void onSuccess(PDKResponse response) {
+                        super.onSuccess(response);
+
+                        PDKUser user = response.getUser();
+                        Log.e("@@@getMe", user.getImageUrl());
+                    }
+
+                    @Override
+                    public void onFailure(PDKException exception) {
+                        super.onFailure(exception);
+                        Log.e("@@@getMeFailed", exception.getDetailMessage());
+                    }
+
+                }
+        );
+
+        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image",
+                new PDKCallback() {
+                    @Override
+                    public void onSuccess(PDKResponse response) {
+                        super.onSuccess(response);
+
+                        List<PDKBoard> boardList = response.getBoardList();
+                        Log.e("@@@getBoards", boardList.get(0).getName());
+                        Log.e("@@@getBoards", boardList.get(0).getImageUrl());
+                    }
+
+                    @Override
+                    public void onFailure(PDKException exception) {
+                        super.onFailure(exception);
+                        Log.e("@@@getMeFailed", exception.getDetailMessage());
+                    }
+
+                }
+        );
+
+        PDKClient.getInstance().getMyPins("id,link,url,creator,board,media,image,attribution,metadata",
+                new PDKCallback() {
+                    @Override
+                    public void onSuccess(PDKResponse response) {
+                        super.onSuccess(response);
+
+                        List<PDKPin> pinList = response.getPinList();
+                        Log.e("@@@getPins", pinList.get(0).getImageUrl());
+                        Log.e("@@@getPins", pinList.get(0).getMetadata());
+                        Log.e("@@@getPins", pinList.get(0).getBoard().getName());
+                        Log.e("@@@getPins", pinList.get(0).getLink());
+                        Log.e("@@@getPins", pinList.get(0).getUser().getFirstName());
+                    }
+
+                    @Override
+                    public void onFailure(PDKException exception) {
+                        super.onFailure(exception);
+                        Log.e("@@@getMyPinsFailed", exception.getDetailMessage());
+                    }
+
+                }
+        );
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         PDKClient.getInstance().onOauthResponse(requestCode, resultCode, data);
+
+        Log.d("@@@onActivityResult", "aaa");
+        getPinList();
+        getPinterestUser();
     }
 
     @Override
@@ -118,5 +199,13 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void getPinterestUser() {
+        Log.d("@@@getPinterestUser", "called");
+    }
+
+    public void getPinList() {
+        Log.d("@@@getPinList", "called");
     }
 }
