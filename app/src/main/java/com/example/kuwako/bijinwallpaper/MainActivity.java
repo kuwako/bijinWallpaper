@@ -45,16 +45,16 @@ public class MainActivity extends AppCompatActivity {
         PDKClient.configureInstance(this, "4819393203784402346");
         PDKClient.getInstance().onConnect(this);
 
-        List scopes = new ArrayList<String>();
-        scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
-        scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
+//        List scopes = new ArrayList<String>();
+//        scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
+//        scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
 
-        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
-            @Override
-            public void onSuccess(PDKResponse response) {
-                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-                //user logged in, use response.getUser() to get PDKUser object
-                Log.d("@@@userImageUrl",response.getUser().getImageUrl());
+//        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
+//            @Override
+//            public void onSuccess(PDKResponse response) {
+//                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
+//                //user logged in, use response.getUser() to get PDKUser object
+//                Log.d("@@@userImageUrl",response.getUser().getImageUrl());
 
 //                PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
 //                    @Override
@@ -96,54 +96,54 @@ public class MainActivity extends AppCompatActivity {
 //                });
 
 
-            }
+//            }
+//
+//            @Override
+//            public void onFailure(PDKException exception) {
+//                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
+//            }
+//        });
 
-            @Override
-            public void onFailure(PDKException exception) {
-                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
-            }
-        });
+//        getPinList();
 
-        getPinList();
+//        PDKClient.getInstance().getMe("id,image,counts,created_at,first_name,last_name,bio,username",
+//                new PDKCallback() {
+//                    @Override
+//                    public void onSuccess(PDKResponse response) {
+//                        super.onSuccess(response);
+//
+//                        PDKUser user = response.getUser();
+//                        Log.e("@@@getMe", user.getImageUrl());
+//                    }
+//
+//                    @Override
+//                    public void onFailure(PDKException exception) {
+//                        super.onFailure(exception);
+//                        Log.e("@@@getMeFailed", exception.getDetailMessage());
+//                    }
+//
+//                }
+//        );
 
-        PDKClient.getInstance().getMe("id,image,counts,created_at,first_name,last_name,bio,username",
-                new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        super.onSuccess(response);
-
-                        PDKUser user = response.getUser();
-                        Log.e("@@@getMe", user.getImageUrl());
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        super.onFailure(exception);
-                        Log.e("@@@getMeFailed", exception.getDetailMessage());
-                    }
-
-                }
-        );
-
-        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image",
-                new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        super.onSuccess(response);
-
-                        List<PDKBoard> boardList = response.getBoardList();
-                        Log.e("@@@getBoards", boardList.get(0).getName());
-                        Log.e("@@@getBoards", boardList.get(0).getImageUrl());
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        super.onFailure(exception);
-                        Log.e("@@@getMeFailed", exception.getDetailMessage());
-                    }
-
-                }
-        );
+//        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image",
+//                new PDKCallback() {
+//                    @Override
+//                    public void onSuccess(PDKResponse response) {
+//                        super.onSuccess(response);
+//
+//                        List<PDKBoard> boardList = response.getBoardList();
+//                        Log.e("@@@getBoards", boardList.get(0).getName());
+//                        Log.e("@@@getBoards", boardList.get(0).getImageUrl());
+//                    }
+//
+//                    @Override
+//                    public void onFailure(PDKException exception) {
+//                        super.onFailure(exception);
+//                        Log.e("@@@getMeFailed", exception.getDetailMessage());
+//                    }
+//
+//                }
+//        );
 
         PDKClient.getInstance().getMyPins("id,link,url,creator,board,media,image,attribution,metadata",
                 new PDKCallback() {
@@ -152,11 +152,25 @@ public class MainActivity extends AppCompatActivity {
                         super.onSuccess(response);
 
                         List<PDKPin> pinList = response.getPinList();
-                        Log.e("@@@getPins", pinList.get(0).getImageUrl());
-                        Log.e("@@@getPins", pinList.get(0).getMetadata());
-                        Log.e("@@@getPins", pinList.get(0).getBoard().getName());
-                        Log.e("@@@getPins", pinList.get(0).getLink());
-                        Log.e("@@@getPins", pinList.get(0).getUser().getFirstName());
+
+                        Boolean isBijin = false;
+                        PDKPin bijinPin = null;
+
+                        while (!isBijin) {
+                            int randomNum = (int) (Math.random() * pinList.size());
+                            bijinPin = pinList.get(randomNum);
+
+                            if (bijinPin == null) {
+                                Log.e("@@@bijinPin", "bijinPin is null");
+                                return;
+                            }
+
+                            if (bijinPin.getBoard() != null && bijinPin.getBoard().getName().equals("美人")) {
+                                isBijin = true;
+                            }
+                        }
+
+                        Log.e("@@@getPin", bijinPin.getImageUrl());
                     }
 
                     @Override
