@@ -145,12 +145,14 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //        );
 
+        Log.e("@@@aaa", "aaa");
         PDKClient.getInstance().getMyPins("id,link,url,creator,board,media,image,attribution,metadata",
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
                         super.onSuccess(response);
 
+                        Log.e("@@@getPin", "onSuccess");
                         List<PDKPin> pinList = response.getPinList();
 
                         Boolean isBijin = false;
@@ -165,9 +167,9 @@ public class MainActivity extends AppCompatActivity {
                                 return;
                             }
 
-                            if (bijinPin.getBoard() != null && bijinPin.getBoard().getName().equals("美人")) {
+//                            if (bijinPin.getBoard() != null && bijinPin.getBoard().getName().equals("美人")) {
                                 isBijin = true;
-                            }
+//                            }
                         }
 
                         Log.e("@@@getPin", bijinPin.getImageUrl());
