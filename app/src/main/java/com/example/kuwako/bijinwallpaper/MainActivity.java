@@ -48,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
         List scopes = new ArrayList<String>();
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_RELATIONSHIPS);
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_RELATIONSHIPS);
 
         PDKClient.getInstance().login(this, scopes, new PDKCallback() {
             @Override
@@ -202,10 +204,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         PDKClient.getInstance().onOauthResponse(requestCode, resultCode, data);
-
-        Log.d("@@@onActivityResult", "aaa");
-        getPinList();
-        getPinterestUser();
     }
 
     @Override
