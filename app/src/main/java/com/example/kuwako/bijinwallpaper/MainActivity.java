@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // pinterest系処理
+        // TODO 定数化
         PDKClient.configureInstance(this, "4819393203784402346");
         PDKClient.getInstance().onConnect(this);
 
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_RELATIONSHIPS);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_RELATIONSHIPS);
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PRIVATE);
+        scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PRIVATE);
 
         PDKClient.getInstance().login(this, scopes, new PDKCallback() {
             @Override
@@ -138,8 +141,6 @@ public class MainActivity extends AppCompatActivity {
                         PDKBoard targetBoard = null;
                         for (int i = 0; i < boardList.size(); i++) {
                             PDKBoard board = boardList.get(i);
-                            Log.e("@@@getBoards", boardList.get(i).getName());
-                            Log.e("@@@getBoards", boardList.get(i).getImageUrl());
 
                             if (board.getName().equals("美人")) {
                                 targetBoard = board;
@@ -149,6 +150,12 @@ public class MainActivity extends AppCompatActivity {
                         Log.e("@@@targetBoard", targetBoard.getName());
                         Log.e("@@@targetBoard", String.valueOf(targetBoard.getPinsCount()));
                         Log.e("@@@targetBoard", targetBoard.getUid());
+
+                        String boardId = targetBoard.getUid();
+
+                        if (boardId != null) {
+                            getBoard(boardId);
+                        }
                     }
 
                     @Override
@@ -187,7 +194,9 @@ public class MainActivity extends AppCompatActivity {
 //                            }
                         }
 
-                        Log.e("@@@getPin", bijinPin.getImageUrl());
+                        Log.e("@@@getBijinPin", bijinPin.getImageUrl());
+                        Log.e("@@@getBijinPin", bijinPin.getLink());
+                        Log.e("@@@getBijinPin", bijinPin.getUid());
                     }
 
                     @Override
@@ -235,4 +244,44 @@ public class MainActivity extends AppCompatActivity {
     public void getPinList() {
         Log.d("@@@getPinList", "called");
     }
+
+    public void getBoard(String boardId) {
+        PDKClient.getInstance().getBoard(boardId, "id,name,url,description,creator,image",
+                new PDKCallback() {
+                    @Override
+                    public void onSuccess(PDKResponse response) {
+                        PDKBoard board = response.getBoard();
+                        Log.e("@@@getBoardAAA", "AAA");
+                        Log.e("@@@getBoardAAA", board.getName());
+                        Log.e("@@@getBoardAAA", board.getUid());
+                    }
+
+                    @Override
+                    public void onFailure(PDKException exception) {
+                        Log.e("@@@getBoardAAA", String.valueOf(exception.getStausCode()));
+                        Log.e("@@@getBoardAAA", exception.getMessage());
+                    }
+                });
+
+        PDKClient.getInstance().getBoardPins(boardId, "id,link,url,creator,board,media,image,attribution,metadata",
+                new PDKCallback() {
+                    @Override
+                    public void onSuccess(PDKResponse response) {
+                        Log.e("@@@getBoardPinsBBB", "BBB");
+                        List<PDKPin> pinList = response.getPinList();
+                        Log.e("@@@getBoardPinsBBB", "" + pinList.size());
+
+                        for (int i = 0; i < pinList.size(); i++) {
+                            PDKPin pin = pinList.get(i);
+                            Log.e("@@@getBoardPinsBBB", pin.getImageUrl());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(PDKException exception) {
+                        Log.e("@@@getBoardBBB", String.valueOf(exception.getStausCode()));
+                    }
+                });
+    }
+
 }
