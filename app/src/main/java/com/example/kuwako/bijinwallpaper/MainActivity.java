@@ -53,85 +53,34 @@ public class MainActivity extends AppCompatActivity {
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_RELATIONSHIPS);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PRIVATE);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PRIVATE);
-
-        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
-            @Override
-            public void onSuccess(PDKResponse response) {
-                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-                //user logged in, use response.getUser() to get PDKUser object
-                Log.d("@@@userImageUrl", response.getUser().getImageUrl());
-
-                PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        Log.d("@@@username", response.getUser().getFirstName());
-                        PDKUser user = response.getUser();
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        Log.d("@@@username", "getPathFailed");
-                    }
-                });
-
-
-                PDKClient.getInstance().getPath("boards/mrmasakik/美人/", null, new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response){
-                        Log.d("@@@board", response.getBoard().getDescription());
-                        List<PDKPin> pinList = response.getPinList();
-                        PDKPin pinTemp = response.getPin();
-
-                        Log.d("@@@pinTemp", pinTemp.getImageUrl());
-                        for (int i = 0; i < pinList.size() ;i++) {
-                            PDKPin pin = pinList.get(i);
-                            if (i == 1) {
-                                Log.d("@@@pinUrl", pin.getImageUrl());
-                                Log.d("@@@pinLink", pin.getLink());
-                                Log.d("@@@pinMetaData", pin.getMetadata());
-                                Log.d("@@@pinNote", pin.getNote());
-                                Log.d("@@@pinUid", pin.getUid());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        Log.d("@@@borad", exception.getMessage() + " : " + exception.getDetailMessage() + " : " + exception.getLocalizedMessage());
-                    }
-                });
-
-
-            }
-
-            @Override
-            public void onFailure(PDKException exception) {
-                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
-            }
-        });
-
-//        getPinList();
-
-//        PDKClient.getInstance().getMe("id,image,counts,created_at,first_name,last_name,bio,username",
-//                new PDKCallback() {
+//
+//        PDKClient.getInstance().login(this, scopes, new PDKCallback() {
+//            @Override
+//            public void onSuccess(PDKResponse response) {
+//                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
+//                //user logged in, use response.getUser() to get PDKUser object
+//                Log.d("@@@userImageUrl", response.getUser().getImageUrl());
+//
+//                PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
 //                    @Override
 //                    public void onSuccess(PDKResponse response) {
-//                        super.onSuccess(response);
-//
-//                        PDKUser user = response.getUser();
-//                        Log.e("@@@getMe", user.getImageUrl());
+//                        Log.d("@@@username", response.getUser().getFirstName());
 //                    }
 //
 //                    @Override
 //                    public void onFailure(PDKException exception) {
-//                        super.onFailure(exception);
-//                        Log.e("@@@getMeFailed", exception.getDetailMessage());
+//                        Log.d("@@@username", "getPathFailed");
 //                    }
+//                });
+//            }
 //
-//                }
-//        );
+//            @Override
+//            public void onFailure(PDKException exception) {
+//                Log.e("@@@login_failure" + getClass().getName(), exception.getDetailMessage());
+//            }
+//        });
 
-        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image",
+        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image, counts",
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
@@ -167,46 +116,6 @@ public class MainActivity extends AppCompatActivity {
                 }
         );
 
-        Log.e("@@@aaa", "aaa");
-        PDKClient.getInstance().getMyPins("id,link,url,creator,board,media,image,attribution,metadata",
-                new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        super.onSuccess(response);
-
-                        Log.e("@@@getPin", "onSuccess");
-                        List<PDKPin> pinList = response.getPinList();
-
-                        Boolean isBijin = false;
-                        PDKPin bijinPin = null;
-
-                        while (!isBijin) {
-                            int randomNum = (int) (Math.random() * pinList.size());
-                            bijinPin = pinList.get(randomNum);
-
-                            if (bijinPin == null) {
-                                Log.e("@@@bijinPin", "bijinPin is null");
-                                return;
-                            }
-
-//                            if (bijinPin.getBoard() != null && bijinPin.getBoard().getName().equals("美人")) {
-                                isBijin = true;
-//                            }
-                        }
-
-                        Log.e("@@@getBijinPin", bijinPin.getImageUrl());
-                        Log.e("@@@getBijinPin", bijinPin.getLink());
-                        Log.e("@@@getBijinPin", bijinPin.getUid());
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        super.onFailure(exception);
-                        Log.e("@@@getMyPinsFailed", exception.getDetailMessage());
-                    }
-
-                }
-        );
     }
 
     @Override
@@ -237,14 +146,6 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void getPinterestUser() {
-        Log.d("@@@getPinterestUser", "called");
-    }
-
-    public void getPinList() {
-        Log.d("@@@getPinList", "called");
-    }
-
     public void getBoard(String boardId) {
         PDKClient.getInstance().getBoard(boardId, "id,name,url,description,creator,image",
                 new PDKCallback() {
@@ -267,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
+                        // TODO どうにかしてランダムにピンを取る方法を模索する
                         Log.e("@@@getBoardPinsBBB", "BBB");
                         List<PDKPin> pinList = response.getPinList();
                         Log.e("@@@getBoardPinsBBB", "" + pinList.size());
