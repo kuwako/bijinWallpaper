@@ -21,3 +21,9 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+dependencies {
+    apply plugin: 'jetty'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.squareup.picasso:picasso:2.5.2'
+}

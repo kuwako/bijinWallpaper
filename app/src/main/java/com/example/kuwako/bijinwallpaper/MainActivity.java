@@ -10,7 +10,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 
+import com.android.volley.toolbox.Volley;
 import com.pinterest.android.pdk.PDKBoard;
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
@@ -18,12 +20,15 @@ import com.pinterest.android.pdk.PDKException;
 import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
 import com.pinterest.android.pdk.PDKUser;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
+    ImageView imageView;
+    PDKPin targetPin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +36,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        imageView = (ImageView) findViewById(R.id.imagePinterest);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if (targetPin != null) {
+                    Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
+                }
             }
         });
 
@@ -177,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                             PDKPin pin = pinList.get(i);
                             Log.e("@@@getBoardPinsBBB", pin.getImageUrl());
                         }
+
+                        targetPin = pinList.get(0);
                     }
 
                     @Override
