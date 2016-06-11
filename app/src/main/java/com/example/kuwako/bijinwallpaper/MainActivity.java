@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.android.volley.toolbox.Volley;
@@ -42,7 +43,9 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("@@@fab_clicked", "clicked");
                 if (targetPin != null) {
+                    Log.d("@@@fab_clicked", "targetPin is not null");
                     Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
                 }
             }
