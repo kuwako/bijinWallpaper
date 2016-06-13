@@ -31,6 +31,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     ImageView imageView;
     PDKPin targetPin;
+    List<PDKBoard> boardList;
     List<PDKPin> pinList;
     LinearLayout llPinList;
 
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
                     llPinList.addView(imageView);
+                } else {
+                    loginPinterest();
                 }
             }
         });
@@ -64,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         PDKClient.configureInstance(this, "4819393203784402346");
         PDKClient.getInstance().onConnect(this);
 
+    }
+
+    public void loginPinterest() {
         List scopes = new ArrayList<String>();
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_READ_PUBLIC);
         scopes.add(PDKClient.PDKCLIENT_PERMISSION_WRITE_PUBLIC);
@@ -76,20 +82,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(PDKResponse response) {
                 Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-                //user logged in, use response.getUser() to get PDKUser object
-                Log.d("@@@userImageUrl", response.getUser().getImageUrl());
 
-                PDKClient.getInstance().getPath("me/", null, new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        Log.d("@@@username", response.getUser().getFirstName());
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        Log.d("@@@username", "getPathFailed");
-                    }
-                });
+                getMyBoards();
             }
 
             @Override
@@ -98,13 +92,16 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public void getMyBoards() {
         PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image, counts",
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
                         super.onSuccess(response);
 
-                        List<PDKBoard> boardList = response.getBoardList();
+                        boardList = response.getBoardList();
                         PDKBoard targetBoard = null;
                         for (int i = 0; i < boardList.size(); i++) {
                             PDKBoard board = boardList.get(i);
@@ -133,7 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
                 }
         );
-
     }
 
     @Override
@@ -166,22 +162,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void getBoard(String boardId) {
         Log.d("@@@getBoard", "XXXXXX");
-//        PDKClient.getInstance().getBoard(boardId, "id,name,url,description,creator,image",
-//                new PDKCallback() {
-//                    @Override
-//                    public void onSuccess(PDKResponse response) {
-//                        PDKBoard board = response.getBoard();
-//                        Log.e("@@@getBoardAAA", "AAA");
-//                        Log.e("@@@getBoardAAA", board.getName());
-//                        Log.e("@@@getBoardAAA", board.getUid());
-//                    }
-//
-//                    @Override
-//                    public void onFailure(PDKException exception) {
-//                        Log.e("@@@getBoardAAA", String.valueOf(exception.getStausCode()));
-//                        Log.e("@@@getBoardAAA", String.valueOf(exception.getMessage()));
-//                    }
-//                });
 
         PDKClient.getInstance().getBoardPins(boardId, "id,link,url,board,media,image,attribution,metadata",
                 new PDKCallback() {
