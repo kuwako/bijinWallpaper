@@ -34,6 +34,10 @@ public class MainActivity extends AppCompatActivity {
     List<PDKBoard> boardList;
     List<PDKPin> pinList;
     LinearLayout llPinList;
+    // TODO 定数クラス
+    final String PIN_COLUMNS = "id,link,url,board,media,image,attribution,metadata";
+    final String BOARD_COLUMNS = "id,name,url,description,creator,image, counts";
+    final String PDK_CLIENT_ID = "4819393203784402346";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // pinterest系処理
-        // TODO 定数化
-        PDKClient.configureInstance(this, "4819393203784402346");
+        PDKClient.configureInstance(this, PDK_CLIENT_ID);
         PDKClient.getInstance().onConnect(this);
 
     }
@@ -95,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getMyBoards() {
-        PDKClient.getInstance().getMyBoards("id,name,url,description,creator,image, counts",
+        PDKClient.getInstance().getMyBoards(BOARD_COLUMNS,
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
@@ -163,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
     public void getBoard(String boardId) {
         Log.d("@@@getBoard", "XXXXXX");
 
-        PDKClient.getInstance().getBoardPins(boardId, "id,link,url,board,media,image,attribution,metadata",
+        PDKClient.getInstance().getBoardPins(boardId, PIN_COLUMNS,
                 new PDKCallback() {
                     @Override
                     public void onSuccess(PDKResponse response) {
