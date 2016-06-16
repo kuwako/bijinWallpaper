@@ -29,7 +29,6 @@ import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    ImageView imageView;
     PDKPin targetPin;
     List<PDKBoard> boardList;
     List<PDKPin> pinList;
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         // pinterest系処理
         PDKClient.configureInstance(this, PDK_CLIENT_ID);
         PDKClient.getInstance().onConnect(this);
-
     }
 
     public void loginPinterest() {
