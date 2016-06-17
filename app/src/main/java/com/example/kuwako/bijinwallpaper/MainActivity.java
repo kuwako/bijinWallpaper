@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.Volley;
 import com.pinterest.android.pdk.PDKBoard;
@@ -33,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
     List<PDKBoard> boardList;
     List<PDKPin> pinList;
     LinearLayout llPinList;
+    Boolean loginFlg = false;
+    Boolean logining = false;
     // TODO 定数クラス
     final String PIN_COLUMNS = "id,link,url,board,media,image,attribution,metadata";
     final String BOARD_COLUMNS = "id,name,url,description,creator,image, counts";
@@ -51,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.d("@@@fab_clicked", "clicked");
-                if (pinList != null && pinList.size() > 0) {
+                if (loginFlg && pinList != null && pinList.size() > 0) {
                     Log.d("@@@fab_clicked", "targetPin is not null");
                     ImageView imageView = new ImageView(view.getContext());
                     int index = (int) (Math.random() * pinList.size());
@@ -59,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
 
                     Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
                     llPinList.addView(imageView);
-                } else {
+                } else if (logining == false) {
+                    logining = true;
                     loginPinterest();
                 }
             }
@@ -82,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
         PDKClient.getInstance().login(this, scopes, new PDKCallback() {
             @Override
             public void onSuccess(PDKResponse response) {
-                Log.d("@@@login_success" + getClass().getName(), response.getData().toString());
-
                 getMyBoards();
             }
 
@@ -112,10 +114,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        Log.e("@@@targetBoard", targetBoard.getName());
-                        Log.e("@@@targetBoard", String.valueOf(targetBoard.getPinsCount()));
-                        Log.e("@@@targetBoard", targetBoard.getUid());
-
                         String boardId = targetBoard.getUid();
 
                         if (boardId != null) {
@@ -128,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                         super.onFailure(exception);
                         Log.e("@@@getMeFailed", exception.getDetailMessage());
                     }
-
                 }
         );
     }
@@ -171,18 +168,14 @@ public class MainActivity extends AppCompatActivity {
                         // TODO どうにかしてランダムにピンを取る方法を模索する
                         Log.e("@@@getBoardPinsBBB", "BBB");
                         pinList = response.getPinList();
-                        Log.e("@@@getBoardPinsBBB", "" + pinList.size());
-
-                        for (int i = 0; i < pinList.size(); i++) {
-                            PDKPin pin = pinList.get(i);
-                            Log.e("@@@getBoardPinsBBB", pin.getImageUrl());
-                        }
-
-                        targetPin = pinList.get(0);
+                        loginFlg = true;
+                        logining = false;
+                        Toast.makeText(getApplicationContext(), "login", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(PDKException exception) {
+                        Toast.makeText(getApplicationContext(), "login", Toast.LENGTH_SHORT).show();
                         Log.e("@@@getBoardBBB", String.valueOf(exception.getStausCode()));
                     }
                 });
