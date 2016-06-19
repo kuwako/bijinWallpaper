@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
             try {
                 wallpaperManager.setBitmap(bitmap);
-                Toast.makeText(this, "壁紙が変更されました。", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "壁紙が変更されました。", Toast.LENGTH_SHORT).show();
             } catch (IOException e) {
                 e.printStackTrace();
             }
