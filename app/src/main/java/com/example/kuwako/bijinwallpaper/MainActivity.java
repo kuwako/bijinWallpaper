@@ -1,6 +1,9 @@
 package com.example.kuwako.bijinwallpaper;
 
+import android.app.WallpaperManager;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,7 +27,9 @@ import com.pinterest.android.pdk.PDKPin;
 import com.pinterest.android.pdk.PDKResponse;
 import com.pinterest.android.pdk.PDKUser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +41,33 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout llPinList;
     Boolean loginFlg = false;
     Boolean logining = false;
+    WallpaperManager wallpaperManager;
     // TODO 定数クラス
     final String PIN_COLUMNS = "id,link,url,board,media,image,attribution,metadata";
     final String BOARD_COLUMNS = "id,name,url,description,creator,image, counts";
     final String PDK_CLIENT_ID = "4819393203784402346";
+
+    private Target target = new Target() {
+        @Override
+        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            try {
+                wallpaperManager.setBitmap(bitmap);
+                Toast.makeText(this, "壁紙が変更されました。", Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onBitmapFailed(Drawable errorDrawable) {
+
+        }
+
+        @Override
+        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         llPinList = (LinearLayout) findViewById(R.id.llPinList);
+        wallpaperManager = WallpaperManager.getInstance(this);
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -56,12 +85,19 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("@@@fab_clicked", "clicked");
                 if (loginFlg && pinList != null && pinList.size() > 0) {
                     Log.d("@@@fab_clicked", "targetPin is not null");
-                    ImageView imageView = new ImageView(view.getContext());
+                    final ImageView imageView = new ImageView(view.getContext());
+                    imageView.setClickable(true);
                     int index = (int) (Math.random() * pinList.size());
-                    PDKPin targetPin = pinList.get(index);
+                    final PDKPin targetPin = pinList.get(index);
 
                     Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
                     llPinList.addView(imageView);
+                    imageView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(target);
+                        }
+                    });
                 } else if (logining == false) {
                     logining = true;
                     loginPinterest();

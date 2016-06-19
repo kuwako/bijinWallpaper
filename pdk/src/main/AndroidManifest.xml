@@ -7,4 +7,6 @@
 
     </application>
 
+    <uses-permission
+        android:name="android.permission.SET_WALLPAPER" />
 </manifest>
