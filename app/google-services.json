@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "525503586850",
+    "firebase_url": "https://bijinwallpaper.firebaseio.com",
+    "project_id": "bijinwallpaper",
+    "storage_bucket": "bijinwallpaper.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:525503586850:android:c641d495fe986a86",
+        "android_client_info": {
+          "package_name": "com.example.kuwako.bijinwallpaper"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "525503586850-f0thcqp1jfnh09vi7kqs5pluios4601c.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfcsGOufdBEsDfMEqAjfonx2W8YC3hlcI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

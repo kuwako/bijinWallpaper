@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.pinterest.android.pdk.PDKBoard;
 import com.pinterest.android.pdk.PDKCallback;
 import com.pinterest.android.pdk.PDKClient;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     Boolean loginFlg = false;
     Boolean logining = false;
     WallpaperManager wallpaperManager;
+    FirebaseAnalytics fba;
     // TODO 定数クラス
     final String PIN_COLUMNS = "id,link,url,board,media,image,attribution,metadata";
     final String BOARD_COLUMNS = "id,name,url,description,creator,image, counts";
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        fba = FirebaseAnalytics.getInstance(this);
         llPinList = (LinearLayout) findViewById(R.id.llPinList);
         wallpaperManager = WallpaperManager.getInstance(this);
 
