@@ -102,6 +102,9 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 } else if (logining == false) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(FirebaseAnalytics.Param.SIGN_UP_METHOD, "login");
+                    fba.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                     logining = true;
                     loginPinterest();
                 }
