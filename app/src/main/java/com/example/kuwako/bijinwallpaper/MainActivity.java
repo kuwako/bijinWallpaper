@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     final String PIN_COLUMNS = "id,link,url,board,media,image,attribution,metadata";
     final String BOARD_COLUMNS = "id,name,url,description,creator,image, counts";
     final String PDK_CLIENT_ID = "4819393203784402346";
+    final String BIJIN_BOARD_ID = "505177351890816646";
 
     private Target target = new Target() {
         @Override
@@ -106,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
                     bundle.putString(FirebaseAnalytics.Param.SIGN_UP_METHOD, "login");
                     fba.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
                     logining = true;
+//                    getBoard(BIJIN_BOARD_ID);
                     loginPinterest();
+                    // TODO Pinterestログインなくていい方法模索
                 }
             }
         });
@@ -128,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         PDKClient.getInstance().login(this, scopes, new PDKCallback() {
             @Override
             public void onSuccess(PDKResponse response) {
-                getMyBoards();
+                getBoard(BIJIN_BOARD_ID);
             }
 
             @Override
@@ -137,39 +140,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-    }
-
-    public void getMyBoards() {
-        PDKClient.getInstance().getMyBoards(BOARD_COLUMNS,
-                new PDKCallback() {
-                    @Override
-                    public void onSuccess(PDKResponse response) {
-                        super.onSuccess(response);
-
-                        boardList = response.getBoardList();
-                        PDKBoard targetBoard = null;
-                        for (int i = 0; i < boardList.size(); i++) {
-                            PDKBoard board = boardList.get(i);
-
-                            if (board.getName().equals("美人")) {
-                                targetBoard = board;
-                            }
-                        }
-
-                        String boardId = targetBoard.getUid();
-
-                        if (boardId != null) {
-                            getBoard(boardId);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(PDKException exception) {
-                        super.onFailure(exception);
-                        Log.e("@@@getMeFailed", exception.getDetailMessage());
-                    }
-                }
-        );
     }
 
     @Override
@@ -201,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void getBoard(String boardId) {
-        Log.d("@@@getBoard", "XXXXXX");
+        Log.d("@@@getBoard", String.valueOf(boardId));
 
         PDKClient.getInstance().getBoardPins(boardId, PIN_COLUMNS,
                 new PDKCallback() {
