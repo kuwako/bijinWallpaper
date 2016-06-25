@@ -72,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    // TODO imageviewをサイズ固定にして横並びにできるようにする。
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
