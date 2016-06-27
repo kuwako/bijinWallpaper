@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -96,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                     final PDKPin targetPin = pinList.get(index);
 
                     Picasso.with(getApplicationContext()).load(targetPin.getImageUrl()).into(imageView);
+                    imageView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, 500));
                     llPinList.addView(imageView);
                     imageView.setOnClickListener(new View.OnClickListener() {
                         @Override
