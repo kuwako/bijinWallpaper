@@ -2,3 +2,4 @@
 
 Androidの壁紙をランダムで美人に変えるアプリ。  
 PinterestAPIのOAuthとる
+Pinterestに画像保存しちゃだめって言われたので打ち止め
